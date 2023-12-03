@@ -32,164 +32,166 @@ import com.yourcompany.android.jetnotes.theme.JetNotesThemeSettings
 
 @Composable
 fun AppDrawer(
-    currentSreen: Screen,
-    onScreenSelected: (Screen) -> Unit
-){
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        AppDrawerHeader()
-        Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .2f))
-        ScreenNavigationButton(
-            icon = Icons.Filled.Home,
-            label = "Notes",
-            isSelected = currentSreen == Screen.Notes,
-            onClick = {
-                onScreenSelected(Screen.Notes)
-            }
-        )
-        ScreenNavigationButton(
-            icon = Icons.Filled.Delete,
-            label = "Trash",
-            isSelected = currentSreen == Screen.Trash,
-            onClick = {
-                onScreenSelected(Screen.Trash)
-            }
-        )
-        LightDarkThemeItem()
-    }
+  currentSreen: Screen,
+  onScreenSelected: (Screen) -> Unit
+) {
+  Column(
+    modifier = Modifier.fillMaxSize()
+  ) {
+    AppDrawerHeader()
+    Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .2f))
+    ScreenNavigationButton(
+      icon = Icons.Filled.Home,
+      label = "Notes",
+      isSelected = currentSreen == Screen.Notes,
+      onClick = {
+        onScreenSelected(Screen.Notes)
+      }
+    )
+    ScreenNavigationButton(
+      icon = Icons.Filled.Delete,
+      label = "Trash",
+      isSelected = currentSreen == Screen.Trash,
+      onClick = {
+        onScreenSelected(Screen.Trash)
+      }
+    )
+    LightDarkThemeItem()
+  }
 }
+
 @Composable
-private fun AppDrawerHeader(){
-    Row(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Image(
-            imageVector = Icons.Filled.Menu,
-            contentDescription = "Drawer app icon",
-            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
-            modifier = Modifier.padding(16.dp)
-        )
-        Text(
-            text = "Jet Notes",
-            modifier = Modifier.align(Alignment.CenterVertically)
-        )
-    }
+private fun AppDrawerHeader() {
+  Row(
+    modifier = Modifier.fillMaxWidth()
+  ) {
+    Image(
+      imageVector = Icons.Filled.Menu,
+      contentDescription = "Drawer app icon",
+      colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+      modifier = Modifier.padding(16.dp)
+    )
+    Text(
+      text = "Jet Notes",
+      modifier = Modifier.align(Alignment.CenterVertically)
+    )
+  }
 }
 
 @Composable
 private fun ScreenNavigationButton(
-    icon: ImageVector,
-    label: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
+  icon: ImageVector,
+  label: String,
+  isSelected: Boolean,
+  onClick: () -> Unit
 ) {
-    val colors = MaterialTheme.colors
-    val imageAlpha = if(isSelected) 1f else 0.6f
-    val testColor = if(isSelected) colors.primary else colors.onSurface.copy(alpha = 0.6f)
-    val backgroundColor = if(isSelected) colors.primary.copy(alpha = 0.12f) else colors.surface
+  val colors = MaterialTheme.colors
+  val imageAlpha = if (isSelected) 1f else 0.6f
+  val testColor = if (isSelected) colors.primary else colors.onSurface.copy(alpha = 0.6f)
+  val backgroundColor = if (isSelected) colors.primary.copy(alpha = 0.12f) else colors.surface
 
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                start = 8.dp,
-                end = 8.dp,
-                top = 8.dp
-            ),
-        color = backgroundColor,
-        shape = MaterialTheme.shapes.small
+  Surface(
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(
+        start = 8.dp,
+        end = 8.dp,
+        top = 8.dp
+      ),
+    color = backgroundColor,
+    shape = MaterialTheme.shapes.small
+  ) {
+    Row(
+      horizontalArrangement = Arrangement.Start,
+      verticalAlignment = Alignment.CenterVertically,
+      modifier = Modifier
+        .clickable(onClick = onClick)
+        .fillMaxWidth()
+        .padding(4.dp)
     ) {
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .clickable(onClick = onClick)
-                .fillMaxWidth()
-                .padding(4.dp)
-        ) {
-            Image(
-                imageVector = icon,
-                contentDescription = "Screen navigation Button",
-                colorFilter = ColorFilter.tint(testColor),
-                alpha = imageAlpha
-            )
-            Spacer(Modifier.width(16.dp))
-            Text(
-                text = label,
-                style = MaterialTheme.typography.body2,
-                color = testColor,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
+      Image(
+        imageVector = icon,
+        contentDescription = "Screen navigation Button",
+        colorFilter = ColorFilter.tint(testColor),
+        alpha = imageAlpha
+      )
+      Spacer(Modifier.width(16.dp))
+      Text(
+        text = label,
+        style = MaterialTheme.typography.body2,
+        color = testColor,
+        modifier = Modifier.fillMaxWidth()
+      )
     }
+  }
 
 }
 
 @Composable
-private fun LightDarkThemeItem(){
-    Row (Modifier.padding(8.dp)){
-        Text(
-            text = "Trun on dark theme",
-            style = MaterialTheme.typography.body2,
-            color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
-            modifier = Modifier
-                .weight(1f)
-                .padding(
-                    start = 8.dp,
-                    top = 8.dp,
-                    bottom = 8.dp,
-                    end = 8.dp
-                )
-                .align(Alignment.CenterVertically)
+private fun LightDarkThemeItem() {
+  Row(Modifier.padding(8.dp)) {
+    Text(
+      text = "Trun on dark theme",
+      style = MaterialTheme.typography.body2,
+      color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
+      modifier = Modifier
+        .weight(1f)
+        .padding(
+          start = 8.dp,
+          top = 8.dp,
+          bottom = 8.dp,
+          end = 8.dp
         )
-        Switch(
-            checked = JetNotesThemeSettings.isDarkThemeEnabled,
-            onCheckedChange = {
-                JetNotesThemeSettings.isDarkThemeEnabled = it
-            },
-            modifier = Modifier
-                .padding(
-                    start = 8.dp,
-                    end = 8.dp
-                )
-                .align(Alignment.CenterVertically)
+        .align(Alignment.CenterVertically)
+    )
+    Switch(
+      checked = JetNotesThemeSettings.isDarkThemeEnabled,
+      onCheckedChange = {
+        JetNotesThemeSettings.isDarkThemeEnabled = it
+      },
+      modifier = Modifier
+        .padding(
+          start = 8.dp,
+          end = 8.dp
         )
-    }
+        .align(Alignment.CenterVertically)
+    )
+  }
 }
 
 @Preview
 @Composable
-private fun AppDrawerPreview(){
-    JetNotesTheme {
-        AppDrawer(Screen.Notes, {})
-    }
+private fun AppDrawerPreview() {
+  JetNotesTheme {
+    AppDrawer(Screen.Notes, {})
+  }
 }
+
 @Preview
 @Composable
-private fun AppDrawerHeaderPreview(){
-    JetNotesTheme {
-        AppDrawerHeader()
-    }
+private fun AppDrawerHeaderPreview() {
+  JetNotesTheme {
+    AppDrawerHeader()
+  }
 }
 
 @Preview
 @Composable
 private fun ScreenNavigationButtonPreview() {
-    JetNotesTheme {
-        ScreenNavigationButton(
-            icon = Icons.Filled.Home,
-            label = "Notes",
-            isSelected = true,
-            onClick = {}
-        )
-    }
+  JetNotesTheme {
+    ScreenNavigationButton(
+      icon = Icons.Filled.Home,
+      label = "Notes",
+      isSelected = true,
+      onClick = {}
+    )
+  }
 }
 
 @Preview
 @Composable
 private fun LightDarkThemeItemPreview() {
-    JetNotesTheme {
-        LightDarkThemeItem()
-    }
+  JetNotesTheme {
+    LightDarkThemeItem()
+  }
 }
