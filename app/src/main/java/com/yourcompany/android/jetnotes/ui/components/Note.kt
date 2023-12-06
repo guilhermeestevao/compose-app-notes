@@ -1,6 +1,7 @@
 package com.yourcompany.android.jetnotes.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,10 +21,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.yourcompany.android.jetnotes.domain.model.NoteModel
 import com.yourcompany.android.jetnotes.theme.green
+import com.yourcompany.android.jetnotes.util.fromHex
 
 @Composable
-fun Note(){
+fun Note(
+  note: NoteModel,
+  onNoteClick: (NoteModel) -> Unit = {},
+  onNoteCheckedChange: (NoteModel) -> Unit = {}
+){
   val backgroundShape = RoundedCornerShape(4.dp)
   Row(
     modifier = Modifier
@@ -38,6 +45,11 @@ fun Note(){
         Color.White,
         backgroundShape
       )
+      .clickable(
+        onClick = {
+          onNoteClick(note)
+        }
+      )
   ){
     NoteColor(
       modifier = Modifier
@@ -46,7 +58,7 @@ fun Note(){
           start = 16.dp,
           end = 16.dp
         ),
-      color = green,
+      color = Color.fromHex(note.color.hex),
       size = 40.dp,
       border = 1.dp
     )
@@ -56,7 +68,7 @@ fun Note(){
         .align(Alignment.CenterVertically)
     ) {
       Text(
-        text = "Title",
+        text = note.title,
         maxLines = 1,
         color = Color.Black,
         style = TextStyle(
@@ -66,7 +78,7 @@ fun Note(){
         )
       )
       Text(
-        text = "Content",
+        text = note.content,
         maxLines = 1,
         color = Color.Black.copy(alpha = 0.75f),
         style = TextStyle(
@@ -76,13 +88,18 @@ fun Note(){
         )
       )
     }
-    Checkbox(
-      checked = false,
-      onCheckedChange = {},
-      modifier = Modifier
-        .padding(16.dp)
-        .align(Alignment.CenterVertically)
-    )
+    if(note.isCheckedOff != null) {
+      Checkbox(
+        checked = note.isCheckedOff,
+        onCheckedChange = { isChecked ->
+          val newState = note.copy(isCheckedOff = isChecked)
+          onNoteCheckedChange(newState)
+        },
+        modifier = Modifier
+          .padding(16.dp)
+          .align(Alignment.CenterVertically)
+      )
+    }
   }
 
 }
@@ -90,5 +107,7 @@ fun Note(){
 @Preview
 @Composable
 private fun NotePreview() {
-  Note()
+  Note(
+    note = NoteModel(1, "Note 1", "Content 1", null)
+  )
 }
