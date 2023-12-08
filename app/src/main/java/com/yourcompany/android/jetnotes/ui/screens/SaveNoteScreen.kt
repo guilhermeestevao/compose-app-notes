@@ -19,7 +19,16 @@ import androidx.compose.ui.unit.sp
 import com.yourcompany.android.jetnotes.domain.model.ColorModel
 import com.yourcompany.android.jetnotes.ui.components.NoteColor
 import com.yourcompany.android.jetnotes.util.fromHex
+import com.yourcompany.android.jetnotes.viewmodel.MainViewModel
 
+
+@Composable
+fun SaveNoteScreen(
+  viewModel: MainViewModel,
+  onNavigateBack:() -> Unit = {}
+) {
+  
+}
 @Composable
 fun ColorItem(
   color: ColorModel,

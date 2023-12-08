@@ -38,17 +38,26 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.yourcompany.android.jetnotes.routing.Screen
 import com.yourcompany.android.jetnotes.theme.JetNotesTheme
 import com.yourcompany.android.jetnotes.ui.components.AppDrawer
 import com.yourcompany.android.jetnotes.ui.components.Note
 import com.yourcompany.android.jetnotes.ui.screens.NotesScreen
+import com.yourcompany.android.jetnotes.ui.screens.SaveNoteScreen
+import com.yourcompany.android.jetnotes.ui.screens.TrashScreen
 import com.yourcompany.android.jetnotes.viewmodel.MainViewModel
 import com.yourcompany.android.jetnotes.viewmodel.MainViewModelFactory
 import kotlinx.coroutines.launch
@@ -77,12 +86,20 @@ class MainActivity : AppCompatActivity() {
         val coroutineScope = rememberCoroutineScope()
         val scaffoldState = rememberScaffoldState()
         val navController = rememberNavController()
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
         Scaffold(
           scaffoldState = scaffoldState,
           drawerContent = {
             AppDrawer(
-              currentSreen = Screen.Notes,
-              onScreenSelected = {
+              currentSreen = Screen.fromRoute(navBackStackEntry?.destination?.route),
+              onScreenSelected = { screen ->
+                navController.navigate(screen.route) {
+                  popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                  }
+                  launchSingleTop = true
+                  restoreState = true
+                }
                 coroutineScope.launch {
                   scaffoldState.drawerState.close()
                 }
@@ -90,16 +107,50 @@ class MainActivity : AppCompatActivity() {
             )
           }
         ) {
-          NavHost(
+          MainActivityScreen(
             navController = navController,
-            startDestination = Screen.Notes.route
+            viewModel = viewModel
           ) {
-            composable(Screen.Notes.route) {
-              NotesScreen(viewModel)
+            coroutineScope.launch {
+              scaffoldState.drawerState.open()
             }
           }
         }
       }
+    }
+  }
+}
+
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun MainActivityScreen(
+  navController: NavHostController,
+  viewModel: MainViewModel,
+  openNavigationDrawer: () -> Unit
+){
+  NavHost(
+    navController = navController,
+    startDestination = Screen.Notes.route
+  ) {
+    composable(Screen.Notes.route) {
+      NotesScreen(
+        viewModel,
+        openNavigationDrawer
+      ) {
+        navController.navigate(Screen.SaveNote.route)
+      }
+    }
+    composable(Screen.SaveNote.route) {
+      SaveNoteScreen(viewModel) {
+        navController.popBackStack()
+      }
+    }
+    composable(Screen.Trash.route) {
+      TrashScreen(
+        viewModel,
+        openNavigationDrawer
+      )
     }
   }
 }
