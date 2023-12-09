@@ -67,6 +67,7 @@ fun NotesScreen(
           },
           onNoteClicked = {
             viewModel.onNoteClick(it)
+            onNavigationToSaveNote()
           }
         )
       }
