@@ -1,5 +1,6 @@
 package com.yourcompany.android.jetnotes.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.FabPosition
@@ -23,6 +24,7 @@ import com.yourcompany.android.jetnotes.domain.model.NoteModel
 import com.yourcompany.android.jetnotes.ui.components.Note
 import com.yourcompany.android.jetnotes.viewmodel.MainViewModel
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun NotesScreen(
   viewModel: MainViewModel,
@@ -68,10 +70,9 @@ fun NotesScreen(
         }
       )
     },
-    content = { padding ->
+    content = {
       if(notes.isNotEmpty()) {
         NotesList(
-          modifier = Modifier.padding(padding),
           notes = notes,
           onNoteCheckedChange = {
             viewModel.onNoteCheckedChange(it)
@@ -88,13 +89,11 @@ fun NotesScreen(
 
 @Composable
 fun NotesList(
-  modifier: Modifier = Modifier,
   notes: List<NoteModel>,
   onNoteCheckedChange: (NoteModel) -> Unit,
   onNoteClicked: (NoteModel) -> Unit,
 ) {
-
-  LazyColumn(modifier) {
+  LazyColumn {
     items(count = notes.size) {
       val note = notes[it]
       Note(
